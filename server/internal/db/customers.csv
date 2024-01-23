@@ -1,0 +1,7 @@
+user_id,login,password,name,company_id,credit_cards
+ivan,ivan,12345,Ivan Ivanovich,1,"[""*****-1234"", ""*****-5678""]"
+petr,petr,54321,Petr Petrovich,2,"[""*****-4321"", ""*****-8765""]"
+maria,maria,67890,Maria Petrovna,3,"[""*****-7890"", ""*****-3456""]"
+john,john,45678,John Doe,4,"[""*****-2345"", ""*****-6789""]"
+lisa,lisa,78901,Lisa Johnson,5,"[""*****-5432"", ""*****-9876""]"
+bob,bob,12356,Bob Smith,6,"[""*****-8765"", ""*****-4321""]"
