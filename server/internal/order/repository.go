@@ -7,6 +7,8 @@ import (
 	"os"
 	"strconv"
 	"time"
+
+	"github.com/MuhammadChandra19/order-management/internal/utils"
 )
 
 // OrderItem represents the structure of the order_items data
@@ -28,6 +30,7 @@ type Order struct {
 
 // OrderInfo represents the structure of the information to be shown
 type OrderInfo struct {
+	Id           string    `json:"id"`
 	OrderName    string    `json:"order_name"`
 	CompanyName  string    `json:"company_name"`
 	CustomerName string    `json:"customer_name"`
@@ -39,18 +42,19 @@ type OrderInfo struct {
 
 type OrderRepositoryInterface interface {
 	SeedData() error
-	GetOrderList(search string, startDate, endDate time.Time, limit, offset int) ([]OrderInfo, error)
+	GetOrderList(search string, startDate, endDate time.Time, sortDirection string, limit, offset int) ([]OrderInfo, error)
 }
 
 type repository struct {
 	db sql.DB
 }
 
-func (r *repository) GetOrderList(search string, startDate, endDate time.Time, limit, offset int) ([]OrderInfo, error) {
+func (r *repository) GetOrderList(search string, startDate, endDate time.Time, sortDirection string, limit, offset int) ([]OrderInfo, error) {
 	args := []interface{}{}
 
 	query := `
 		SELECT
+			o.id,
 			o.order_name,
 			cc.company_name,
 			c.name as customer_name,
@@ -58,11 +62,16 @@ func (r *repository) GetOrderList(search string, startDate, endDate time.Time, l
 			o.created_at as order_date,
 			COALESCE(SUM(d.delivered_quantity), 0) as delivered,
 			COALESCE(SUM(oi.price_per_unit * oi.quantity), 0) as total_amount
-		FROM orders o
-		JOIN customers c ON o.customer_id = c.user_id
-		JOIN customer_companies cc ON c.company_id = cc.company_id
-		JOIN order_items oi ON o.id = oi.order_id
-		JOIN deliveries d ON oi.id = d.order_item_id
+		FROM 
+			orders o
+		JOIN 
+			customers c ON o.customer_id = c.user_id
+		JOIN 
+			customer_companies cc ON c.company_id = cc.company_id
+		JOIN 
+			order_items oi ON o.id = oi.order_id
+		JOIN 
+			deliveries d ON oi.id = d.order_item_id
 		WHERE 1=1
 	`
 
@@ -74,19 +83,20 @@ func (r *repository) GetOrderList(search string, startDate, endDate time.Time, l
 	}
 
 	if !startDate.IsZero() && !endDate.IsZero() {
-		query += " AND o.created_at >= $" + strconv.Itoa(len(args)+1) + "AND o.created_at <= $" + strconv.Itoa(len(args)+1)
+		query += " AND o.created_at BETWEEN $" + strconv.Itoa(len(args)+1) + "::timestamp AND $" + strconv.Itoa(len(args)+2) + "::timestamp"
 		args = append(args, startDate, endDate)
-	} else if !startDate.IsZero() {
-		query += " AND o.created_at >= $" + strconv.Itoa(len(args)+1)
-		args = append(args, startDate)
-	} else if !endDate.IsZero() {
-		query += " AND o.created_at <= $" + strconv.Itoa(len(args)+1)
-		args = append(args, endDate)
 	}
 
+	orderByClause := "o.created_at DESC"
+
+	if sortDirection == "ASC" {
+		orderByClause = "o.created_at ASC"
+	}
 	query += `
-		GROUP BY o.id, cc.company_id, c.id, oi.product
-		ORDER BY o.created_at DESC
+		GROUP BY 
+			o.id, cc.company_id, c.id, oi.product
+		ORDER BY
+		` + orderByClause + `
 		LIMIT $` + strconv.Itoa(len(args)+1) + " OFFSET $" + strconv.Itoa(len(args)+2)
 
 	args = append(args, limit, offset)
@@ -102,6 +112,7 @@ func (r *repository) GetOrderList(search string, startDate, endDate time.Time, l
 	for rows.Next() {
 		var orderInfo OrderInfo
 		err := rows.Scan(
+			&orderInfo.Id,
 			&orderInfo.OrderName,
 			&orderInfo.CompanyName,
 			&orderInfo.CustomerName,
@@ -146,7 +157,7 @@ func (r *repository) populateOrders() error {
 	}
 
 	for _, record := range records[1:] {
-		createdAt, err := time.Parse(time.RFC3339, record[1])
+		createdAt, err := utils.CompileDate(record[1])
 		if err != nil {
 			return err
 		}

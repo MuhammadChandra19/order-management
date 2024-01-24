@@ -2,10 +2,10 @@ package app
 
 import (
 	"github.com/MuhammadChandra19/order-management/internal/db"
+	"github.com/MuhammadChandra19/order-management/internal/order"
 
 	"github.com/MuhammadChandra19/order-management/internal/customer"
 	"github.com/MuhammadChandra19/order-management/internal/delivery"
-	"github.com/MuhammadChandra19/order-management/internal/order"
 )
 
 type App struct {

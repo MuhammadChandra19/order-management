@@ -10,8 +10,8 @@ export const router = createRouter({
       component: Main,
     },
     {
-      path: '/order',
-      name: 'order',
+      path: '/orders',
+      name: 'orders',
       component: () => import('@/pages/Order/index.vue')
     }
   ],
