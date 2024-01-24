@@ -9,6 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import DateRangePicker from '@/components/DateRangePicker.vue'
 
 import { ArrowDownZA } from 'lucide-vue-next'
 type TOrderInfo = {
@@ -63,6 +64,7 @@ onMounted(() => {
 </script>
 <template>
   <div class="m-auto">
+    <DateRangePicker class="py-4"/>
     <div class="py-2">
       <Table>
         <TableHeader>
@@ -115,7 +117,7 @@ onMounted(() => {
               {{  order.delivered }}
             </TableCell>
             <TableCell class="text-center">
-              {{  order.total_amount }}
+              ${{  order.total_amount }}
             </TableCell>
           </TableRow>
         </TableBody>
