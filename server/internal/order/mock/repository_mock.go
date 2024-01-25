@@ -49,17 +49,3 @@ func (mr *MockOrderRepositoryInterfaceMockRecorder) GetOrderList(search, startDa
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetOrderList", reflect.TypeOf((*MockOrderRepositoryInterface)(nil).GetOrderList), search, startDate, endDate, sortDirection, limit, offset)
 }
-
-// SeedData mocks base method.
-func (m *MockOrderRepositoryInterface) SeedData() error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SeedData")
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// SeedData indicates an expected call of SeedData.
-func (mr *MockOrderRepositoryInterfaceMockRecorder) SeedData() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SeedData", reflect.TypeOf((*MockOrderRepositoryInterface)(nil).SeedData))
-}
