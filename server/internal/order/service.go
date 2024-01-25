@@ -1,5 +1,7 @@
 package order
 
+//go:generate mockgen -source service.go -destination mock/service_mock.go -package=mock
+
 import (
 	"fmt"
 	"net/http"

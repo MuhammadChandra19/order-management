@@ -1,14 +1,11 @@
 package order
 
+//go:generate mockgen -source repository.go -destination mock/repository_mock.go -package=mock
+
 import (
 	"database/sql"
-	"encoding/csv"
-	"log"
-	"os"
 	"strconv"
 	"time"
-
-	"github.com/MuhammadChandra19/order-management/internal/utils"
 )
 
 // OrderItem represents the structure of the order_items data
@@ -41,12 +38,11 @@ type OrderInfo struct {
 }
 
 type OrderRepositoryInterface interface {
-	SeedData() error
 	GetOrderList(search string, startDate, endDate time.Time, sortDirection string, limit, offset int) ([]OrderInfo, error)
 }
 
 type repository struct {
-	db sql.DB
+	db *sql.DB
 }
 
 func (r *repository) GetOrderList(search string, startDate, endDate time.Time, sortDirection string, limit, offset int) ([]OrderInfo, error) {
@@ -130,108 +126,7 @@ func (r *repository) GetOrderList(search string, startDate, endDate time.Time, s
 	return ordersInfo, nil
 }
 
-func (r *repository) SeedData() error {
-	err := r.populateOrders()
-	if err != nil {
-		return err
-	}
-
-	err = r.populateOrderItems()
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func (r *repository) populateOrders() error {
-	csvFile, err := os.Open("server/internal/db/orders.csv")
-	if err != nil {
-		return err
-	}
-	defer csvFile.Close()
-
-	reader := csv.NewReader(csvFile)
-	records, err := reader.ReadAll()
-	if err != nil {
-		return err
-	}
-
-	for _, record := range records[1:] {
-		createdAt, err := utils.CompileDate(record[1])
-		if err != nil {
-			return err
-		}
-
-		orderName := record[2]
-		customerID := record[3]
-
-		_, err = r.db.Exec(`
-			INSERT INTO orders (created_at, order_name, customer_id)
-			VALUES ($1, $2, $3)
-		`, createdAt, orderName, customerID)
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
-func (r *repository) populateOrderItems() error {
-	csvFile, err := os.Open("server/internal/db/order_items.csv")
-	if err != nil {
-		return err
-	}
-	defer csvFile.Close()
-
-	reader := csv.NewReader(csvFile)
-	records, err := reader.ReadAll()
-	if err != nil {
-		return err
-	}
-
-	for _, record := range records[1:] {
-		orderID := record[1]
-		// Set default value if price_per_unit is empty
-		pricePerUnitStr := record[2]
-		var pricePerUnit float64
-		if pricePerUnitStr == "" {
-			pricePerUnit = 0.0 // You can set any default value here
-		} else {
-			pricePerUnit, err = strconv.ParseFloat(pricePerUnitStr, 64)
-			if err != nil {
-				log.Printf("Error parsing price_per_unit for row %+v: %s\n", record, err)
-				continue
-			}
-		}
-
-		// Set default value if quantity is empty
-		quantityStr := record[3]
-		var quantity int
-		if quantityStr == "" {
-			quantity = 0 // You can set any default value here
-		} else {
-			quantity, err = strconv.Atoi(quantityStr)
-			if err != nil {
-				log.Printf("Error parsing quantity for row %+v: %s\n", record, err)
-				continue
-			}
-		}
-		product := record[4]
-
-		_, err = r.db.Exec(`
-			INSERT INTO order_items (order_id, price_per_unit, quantity, product)
-			VALUES ($1, $2, $3, $4)
-		`, orderID, pricePerUnit, quantity, product)
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
-func NewOrderRepository(db sql.DB) OrderRepositoryInterface {
+func NewOrderRepository(db *sql.DB) OrderRepositoryInterface {
 	return &repository{
 		db: db,
 	}
