@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { watch, onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router';
+import format from 'date-fns-tz/format'
+import { useRoute, useRouter } from 'vue-router';
 import {
   Table,
   TableBody,
@@ -9,9 +10,9 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import DateRangePicker from '@/components/DateRangePicker.vue'
+import DateRangePicker, { TDateRangeValue } from '@/components/DateRangePicker.vue'
 
-import { ArrowDownZA } from 'lucide-vue-next'
+import { ArrowDownZA, ArrowUpAz } from 'lucide-vue-next'
 type TOrderInfo = {
   order_name: string
   company_name: string
@@ -23,9 +24,20 @@ type TOrderInfo = {
 }
 
 const route = useRoute()
+const router = useRouter()
 
 const orderList = ref<TOrderInfo[]>([])
 const isLoading = ref<boolean>(false)
+const queryParams = ref<{
+  search?: string,
+  start_date?: string,
+  end_date?: string,
+  sort_direction?: string,
+  limit?: number,
+  offset?: number
+}>({ sort_direction: 'DESC', limit: 5, offset: 0 })
+
+const dateFilter = ref<TDateRangeValue>()
 
 const loadOrderList = async () => {
   try {
@@ -53,18 +65,49 @@ const parseDate = (dateStr: string) => {
 watch(
   () => route.fullPath,
   () => {
+    queryParams.value = route.query
     loadOrderList()
-  },
+  }
 )
 
+watch(
+  () => dateFilter,
+  () => {
+    if(dateFilter.value?.start && dateFilter.value.end) {
+      router.push({
+        query: {
+          ...queryParams.value,
+          start_date: `${formatDate(dateFilter.value?.start)}Z`,
+          end_date: `${formatDate(dateFilter.value?.end)}Z`
+        }
+      })
+    }
+  },
+  {
+    deep: true
+  }
+)
+
+const formatDate = (date: Date): string => {
+  return format(date, 'yyyy-MM-dd hh:mm:ss', {
+    timeZone: 'Australia/Melbourne'
+  })
+}
+
 onMounted(() => {
+  if (route.query?.start_date && route.query?.end_date) {
+    dateFilter.value = {
+      start: new Date(route.query.start_date as string),
+      end: new Date(route.query.end_date as string)
+    }
+  }
   loadOrderList()
 })
   
 </script>
 <template>
   <div class="m-auto">
-    <DateRangePicker class="py-4"/>
+    <DateRangePicker class="py-4" v-model="dateFilter"/>
     <div class="py-2">
       <Table>
         <TableHeader>
@@ -81,7 +124,30 @@ onMounted(() => {
             <TableHead>
               <div class="flex gap-2">
                 <div>Order date</div>
-                <ArrowDownZA class="cursor-pointer" width="16px"/>
+                <ArrowDownZA 
+                  v-if="queryParams.sort_direction === 'DESC'" 
+                  class="cursor-pointer" width="16px"
+                  @click="() => {
+                    $router.push({
+                      query: {
+                        ...queryParams,
+                        sort_direction: 'ASC'
+                      }
+                    })
+                  }"
+                />
+                <ArrowUpAz 
+                  v-if="queryParams.sort_direction === 'ASC'" 
+                  class="cursor-pointer" width="16px"
+                  @click="() => {
+                    $router.push({
+                      query: {
+                        ...queryParams,
+                        sort_direction: 'DESC'
+                      }
+                    })
+                  }"
+                />
               </div>
             </TableHead>
             <TableHead>

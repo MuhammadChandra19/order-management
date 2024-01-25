@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { addDays, format } from 'date-fns'
+import { useVModel } from '@vueuse/core'
+import { format } from 'date-fns-tz'
 import { Calendar as CalendarIcon } from 'lucide-vue-next'
 
-import { ref } from 'vue'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
@@ -12,10 +12,25 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 
-const date = ref({
-  start: new Date(2022, 0, 20),
-  end: addDays(new Date(2022, 0, 20), 20),
+export type TDateRangeValue = {
+  start: Date,
+  end: Date
+}
+
+const props = defineProps<{modelValue?: TDateRangeValue}>()
+const emits = defineEmits<{
+  (e: 'update:modelValue', payload: typeof props.modelValue): void
+}>()
+
+const modelValue = useVModel(props, 'modelValue', emits, {
+  passive: true,
 })
+
+const formatDate = (date: Date): string => {
+  return format(date, 'LLL dd, y', {
+    timeZone: 'Australia/Melbourne'
+  })
+}
 </script>
 
 <template>
@@ -27,22 +42,22 @@ const date = ref({
           :variant="'outline'"
           :class="cn(
             'w-[300px] justify-start text-left font-normal',
-            !date && 'text-muted-foreground',
+            !modelValue && 'text-muted-foreground',
           )"
         >
           <CalendarIcon class="mr-2 h-4 w-4" />
 
           <span>
-            {{ date.start ? (
-              date.end ? `${format(date.start, 'LLL dd, y')} - ${format(date.end, 'LLL dd, y')}`
-              : format(date.start, 'LLL dd, y')
+            {{ modelValue?.start ? (
+              modelValue.end ? `${formatDate(modelValue.start)} - ${formatDate(modelValue.end)}`
+              : formatDate(modelValue.start)
             ) : 'Pick a date' }}
           </span>
         </Button>
       </PopoverTrigger>
       <PopoverContent class="w-auto p-0" align="start" :avoid-collisions="true">
         <Calendar
-          v-model.range="date"
+          v-model.range="modelValue"
           :columns="2"
         />
       </PopoverContent>
