@@ -1,4 +1,5 @@
-import { fireEvent, render, waitFor } from '@testing-library/vue'
+import { fireEvent, render, waitFor, within } from '@testing-library/vue'
+import userEvent from '@testing-library/user-event'
 import OrderList from '@/pages/Order/index.vue'
 import { Mock } from 'vitest'
 import { MOCK_ORDER_INFO } from '@/lib/mock/orderinfo'
@@ -12,6 +13,15 @@ global.fetch = vi.fn(() =>
 
 const MOCK_PUSH = vi.fn()
 
+const ResizeObserverMock = vi.fn(() => ({
+  observe: vi.fn(),
+  unobserve: vi.fn(),
+  disconnect: vi.fn(),
+}));
+
+// Stub the global ResizeObserver
+vi.stubGlobal('ResizeObserver', ResizeObserverMock);
+
 
 vi.mock('vue-router',async () => {
   return {
@@ -19,9 +29,11 @@ vi.mock('vue-router',async () => {
     useRoute: () => ({
       query: {
         limit: 5, 
-        offset: 0
+        offset: 0,
+        start_date: "2024-01-01 12:00:00Z",
+        end_date: "2024-02-29 12:00:00Z"
       },
-      fullPath: '/orders?limit=5&offset=0'
+      fullPath: '/orders?limit=5&offset=0&start_date=2024-01-01+12:00:00Z&end_date=2024-02-29+12:00:00Z'
     }),
     useRouter: () => ({
       push: MOCK_PUSH
@@ -39,18 +51,24 @@ const renderComponent = () => render(OrderList, {
   }
 })
 
+const user = userEvent.setup()
+
 describe('Orders page', () => {
   afterEach(() => {
     vi.restoreAllMocks()
   })
 
   test('Should render page correctly',async () => {
-    const { getByTestId } = renderComponent()
+    const { getByTestId , getByRole, debug } = renderComponent()
 
     await waitFor(() => {
-      expect(global.fetch).toHaveBeenLastCalledWith("http://localhost:8080/api/orders?limit=5&offset=0")
+      expect(global.fetch)
+        .toHaveBeenLastCalledWith("http://localhost:8080/api/orders?limit=5&offset=0&start_date=2024-01-01+12:00:00Z&end_date=2024-02-29+12:00:00Z")
     })
 
+    expect(within(getByTestId('date-range')).getByText("Jan 01, 2024 - Feb 29, 2024")).toBeDefined()
+    
+    // simulate sort
     expect(getByTestId('sort-desc')).toBeDefined()
 
     await fireEvent.click(getByTestId('sort-desc'))
@@ -58,7 +76,41 @@ describe('Orders page', () => {
       query: {
         limit: 5,
         offset: 0,
-        sort_direction: "ASC"
+        sort_direction: "ASC",
+        start_date: "2024-01-01 12:00:00Z",
+        end_date: "2024-02-29 12:00:00Z"
+      }
+    })
+
+    // simulate search
+    const searchInput = getByTestId('search-input')
+    await user.type(searchInput, "product name{enter}")
+    
+    expect(MOCK_PUSH).toHaveBeenLastCalledWith({
+      query: {
+        limit: 5,
+        offset: 0,
+        search: "product name",
+        sort_direction: "DESC",
+        start_date: "2024-01-01 12:00:00Z",
+        end_date: "2024-02-29 12:00:00Z"
+      }
+    })
+
+    // simulate change limit
+    const limitDropdown = getByTestId('dropdown-page-limit')
+    const buttonDropdown = within(limitDropdown).getByText('5/page')
+    await fireEvent.click(buttonDropdown)
+
+    const dropdownContent = getByRole('menu')
+    await fireEvent.click(within(dropdownContent).getAllByRole('menuitem')[1])
+    expect(MOCK_PUSH).toHaveBeenLastCalledWith({
+      query: {
+        limit: 10,
+        offset: 0,
+        sort_direction: "DESC",
+        start_date: "2024-01-01 12:00:00Z",
+        end_date: "2024-02-29 12:00:00Z"
       }
     })
   })

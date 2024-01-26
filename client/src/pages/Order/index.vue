@@ -5,21 +5,24 @@
       <div class="text-base flex-none">Search</div>
       <div class="flex-1 w-full">
         <Input 
+          data-testid="search-input"
           placeholder="Input by part of the order or product name"  
           v-model="searchText" 
           @keyup.enter="() => {
-            $router.push({
-              query: {
-                ...queryParams,
-                search: searchText
-              }
-            })
+            if(searchText.trim().length > 0) {
+              $router.push({
+                query: {
+                  ...queryParams,
+                  search: searchText
+                }
+              })
+            }
           }"
         />
       </div>
 
     </div>
-    <DateRangePicker class="py-4" v-model="dateFilter"/>
+    <DateRangePicker data-testid="date-range" class="py-4" v-model="dateFilter"/>
     <div class="py-2">
       <Table>
         <TableHeader>
@@ -94,7 +97,7 @@
         <div class="text-sm">Total {{ orderList.length }}</div>
         <div class="p-2 border border-slate-600 rounded-sm" data-testid="dropdown-page-limit">
           <DropdownMenu>
-            <DropdownMenuTrigger>{{ queryParams.limit || 5 }}/page</DropdownMenuTrigger>
+            <DropdownMenuTrigger >{{ queryParams.limit || 5 }}/page</DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuItem @click="() => handleLimitChange(5)">5</DropdownMenuItem>
               <DropdownMenuItem @click="() => handleLimitChange(10)">10</DropdownMenuItem>

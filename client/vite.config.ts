@@ -23,5 +23,18 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom',
+    coverage: {
+      provider: 'istanbul',
+      exclude: [
+        "tailwind.config.js",
+        "src/lib/routes",
+        "src/main.ts",
+        "src/App.vue",
+        "src/components/NavigationBar.vue",
+        "src/components/ui/calendar/Calendar.vue",
+        "src/components/ui/calendar/index.ts",
+        "src/components/DateRangePicker.vue",
+      ],
+    },
   },
 })
