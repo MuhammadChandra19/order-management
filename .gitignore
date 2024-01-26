@@ -1,2 +1,3 @@
 server/vendor
 .vscode
+client/coverage

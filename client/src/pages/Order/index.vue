@@ -11,8 +11,9 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import DateRangePicker, { TDateRangeValue } from '@/components/DateRangePicker.vue'
+import Input from '@/components/ui/input/Input.vue'
+import { ArrowDownZA, ArrowUpAz, Search } from 'lucide-vue-next'
 
-import { ArrowDownZA, ArrowUpAz } from 'lucide-vue-next'
 type TOrderInfo = {
   order_name: string
   company_name: string
@@ -38,6 +39,7 @@ const queryParams = ref<{
 }>({ sort_direction: 'DESC', limit: 5, offset: 0 })
 
 const dateFilter = ref<TDateRangeValue>()
+const searchText = ref<string>()
 
 const loadOrderList = async () => {
   try {
@@ -94,6 +96,16 @@ const formatDate = (date: Date): string => {
   })
 }
 
+const toggleSort = () => {
+  const isDescending = queryParams.value?.sort_direction === 'DESC' || false
+  router.push({
+    query: {
+      ...queryParams.value,
+      sort_direction: isDescending ? 'ASC' : 'DESC'
+    }
+  })
+}
+
 onMounted(() => {
   if (route.query?.start_date && route.query?.end_date) {
     dateFilter.value = {
@@ -101,12 +113,35 @@ onMounted(() => {
       end: new Date(route.query.end_date as string)
     }
   }
+
+  if(route.query.search) {
+    searchText.value = route.query.search as string
+  }
   loadOrderList()
 })
   
 </script>
 <template>
   <div class="m-auto">
+    <div class="flex gap-4 items-center my-2">
+      <Search class="flex-none" width="16px"/>
+      <div class="text-base flex-none">Search</div>
+      <div class="flex-1 w-full">
+        <Input 
+          placeholder="Input by part of the order or product name"  
+          v-model="searchText" 
+          @keyup.enter="() => {
+            $router.push({
+              query: {
+                ...queryParams,
+                search: searchText
+              }
+            })
+          }"
+        />
+      </div>
+
+    </div>
     <DateRangePicker class="py-4" v-model="dateFilter"/>
     <div class="py-2">
       <Table>
@@ -127,26 +162,14 @@ onMounted(() => {
                 <ArrowDownZA 
                   v-if="queryParams.sort_direction === 'DESC'" 
                   class="cursor-pointer" width="16px"
-                  @click="() => {
-                    $router.push({
-                      query: {
-                        ...queryParams,
-                        sort_direction: 'ASC'
-                      }
-                    })
-                  }"
+                  data-testid="sort-desc"
+                  @click="toggleSort"
                 />
                 <ArrowUpAz 
                   v-if="queryParams.sort_direction === 'ASC'" 
                   class="cursor-pointer" width="16px"
-                  @click="() => {
-                    $router.push({
-                      query: {
-                        ...queryParams,
-                        sort_direction: 'DESC'
-                      }
-                    })
-                  }"
+                  data-testid="sort-asc"
+                  @click="toggleSort"
                 />
               </div>
             </TableHead>
