@@ -94,7 +94,7 @@
         <div class="text-sm">Total {{ orderList.length }}</div>
         <div class="p-2 border border-slate-600 rounded-sm" data-testid="dropdown-page-limit">
           <DropdownMenu>
-            <DropdownMenuTrigger>{{ queryParams.limit }}/page</DropdownMenuTrigger>
+            <DropdownMenuTrigger>{{ queryParams.limit || 5 }}/page</DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuItem @click="() => handleLimitChange(5)">5</DropdownMenuItem>
               <DropdownMenuItem @click="() => handleLimitChange(10)">10</DropdownMenuItem>
@@ -116,7 +116,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { watch, onMounted, ref } from 'vue'
+import { watch, onMounted, ref, computed } from 'vue'
 import format from 'date-fns-tz/format'
 import { useRoute, useRouter } from 'vue-router';
 import {
@@ -127,7 +127,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import DateRangePicker, { TDateRangeValue } from '@/components/DateRangePicker.vue'
+import DateRangePicker from '@/components/DateRangePicker.vue'
 import Input from '@/components/ui/input/Input.vue'
 import { ArrowDownZA, ArrowLeftCircle, ArrowRightCircle, ArrowUpAz, Search } from 'lucide-vue-next'
 import {
@@ -148,22 +148,54 @@ type TOrderInfo = {
   total_amount: number
 }
 
-const route = useRoute()
-const router = useRouter()
-
-const orderList = ref<TOrderInfo[]>([])
-const isLoading = ref<boolean>(false)
-const queryParams = ref<{
+type TOrderFilter = {
   search?: string,
   start_date?: string,
   end_date?: string,
   sort_direction?: string,
   limit?: number,
   offset?: number
-}>({ sort_direction: 'DESC', limit: 5, offset: 0 })
+}
 
-const dateFilter = ref<TDateRangeValue>()
-const searchText = ref<string>()
+const route = useRoute()
+const router = useRouter()
+
+const orderList = ref<TOrderInfo[]>([])
+const isLoading = ref<boolean>(false)
+
+const queryParams = computed(() => ({ 
+  sort_direction: 'DESC', ...route.query 
+}) as TOrderFilter)
+
+const searchText = ref<string>(queryParams.value.search || '')
+
+const dateFilter = computed({
+  get() {
+    const { value } = queryParams
+    if (value.start_date && value.end_date) {
+      return {
+        start: new Date(value.start_date as string),
+        end: new Date(value.end_date as string)
+      }
+    }
+  }, 
+  set(newValue) {
+    if(newValue) {
+      router.push({
+        query: {
+          ...queryParams.value,
+          start_date: `${formatDate(newValue.start)}Z`,
+          end_date: `${formatDate(newValue.end)}Z`
+        }
+      })
+    }
+  }
+})
+
+
+onMounted(() => {
+  loadOrderList()
+})
 
 const loadOrderList = async () => {
   try {
@@ -191,26 +223,7 @@ const parseDate = (dateStr: string) => {
 watch(
   () => route.fullPath,
   () => {
-    queryParams.value = route.query
     loadOrderList()
-  }
-)
-
-watch(
-  () => dateFilter,
-  () => {
-    if(dateFilter.value?.start && dateFilter.value.end) {
-      router.push({
-        query: {
-          ...queryParams.value,
-          start_date: `${formatDate(dateFilter.value?.start)}Z`,
-          end_date: `${formatDate(dateFilter.value?.end)}Z`
-        }
-      })
-    }
-  },
-  {
-    deep: true
   }
 )
 
@@ -250,20 +263,6 @@ const handlePageChange = (direction: number) => {
     }
   })
 }
-
-onMounted(() => {
-  if (route.query?.start_date && route.query?.end_date) {
-    dateFilter.value = {
-      start: new Date(route.query.start_date as string),
-      end: new Date(route.query.end_date as string)
-    }
-  }
-
-  if(route.query.search) {
-    searchText.value = route.query.search as string
-  }
-  loadOrderList()
-})
   
 </script>
 
