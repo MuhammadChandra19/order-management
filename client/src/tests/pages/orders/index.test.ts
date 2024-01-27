@@ -59,7 +59,7 @@ describe('Orders page', () => {
   })
 
   test('Should render page correctly',async () => {
-    const { getByTestId , getByRole, debug } = renderComponent()
+    const { getByTestId , getByRole } = renderComponent()
 
     await waitFor(() => {
       expect(global.fetch)
