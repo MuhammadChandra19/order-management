@@ -23,5 +23,6 @@ func main() {
 	}))
 
 	r.GET("/api/orders", app.OrderService.GetOrderList)
+	r.GET("/api/product-sale-stats", app.ProductService.GetProductSalesStats)
 	r.Run((":8080"))
 }
