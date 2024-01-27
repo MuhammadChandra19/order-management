@@ -29,11 +29,11 @@ vi.mock('vue-router',async () => {
     useRoute: () => ({
       query: {
         limit: 5, 
-        offset: 0,
+        offset: 5,
         start_date: "2024-01-01 12:00:00Z",
         end_date: "2024-02-29 12:00:00Z"
       },
-      fullPath: '/orders?limit=5&offset=0&start_date=2024-01-01+12:00:00Z&end_date=2024-02-29+12:00:00Z'
+      fullPath: '/orders?limit=5&offset=5&start_date=2024-01-01+12:00:00Z&end_date=2024-02-29+12:00:00Z'
     }),
     useRouter: () => ({
       push: MOCK_PUSH
@@ -63,7 +63,7 @@ describe('Orders page', () => {
 
     await waitFor(() => {
       expect(global.fetch)
-        .toHaveBeenLastCalledWith("http://localhost:8080/api/orders?limit=5&offset=0&start_date=2024-01-01+12:00:00Z&end_date=2024-02-29+12:00:00Z")
+        .toHaveBeenLastCalledWith("http://localhost:8080/api/orders?limit=5&offset=5&start_date=2024-01-01+12:00:00Z&end_date=2024-02-29+12:00:00Z")
     })
 
     expect(within(getByTestId('date-range')).getByText("Jan 01, 2024 - Feb 29, 2024")).toBeDefined()
@@ -75,7 +75,7 @@ describe('Orders page', () => {
     expect(MOCK_PUSH).toHaveBeenLastCalledWith({
       query: {
         limit: 5,
-        offset: 0,
+        offset: 5,
         sort_direction: "ASC",
         start_date: "2024-01-01 12:00:00Z",
         end_date: "2024-02-29 12:00:00Z"
@@ -89,7 +89,7 @@ describe('Orders page', () => {
     expect(MOCK_PUSH).toHaveBeenLastCalledWith({
       query: {
         limit: 5,
-        offset: 0,
+        offset: 5,
         search: "product name",
         sort_direction: "DESC",
         start_date: "2024-01-01 12:00:00Z",
@@ -107,6 +107,32 @@ describe('Orders page', () => {
     expect(MOCK_PUSH).toHaveBeenLastCalledWith({
       query: {
         limit: 10,
+        offset: 0,
+        sort_direction: "DESC",
+        start_date: "2024-01-01 12:00:00Z",
+        end_date: "2024-02-29 12:00:00Z"
+      }
+    })
+
+    // simulate go to next page
+    const nextPageArrow = getByTestId('next-page-arrow')
+    await fireEvent.click(nextPageArrow)
+    expect(MOCK_PUSH).toHaveBeenLastCalledWith({
+      query: {
+        limit: 5,
+        offset: 10,
+        sort_direction: "DESC",
+        start_date: "2024-01-01 12:00:00Z",
+        end_date: "2024-02-29 12:00:00Z"
+      }
+    })
+
+    // simulate go to previous page
+    const previous = getByTestId('previous-page-arrow')
+    await fireEvent.click(previous)
+    expect(MOCK_PUSH).toHaveBeenLastCalledWith({
+      query: {
+        limit: 5,
         offset: 0,
         sort_direction: "DESC",
         start_date: "2024-01-01 12:00:00Z",
