@@ -1,0 +1,233 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Main page > Should render page correctly 1`] = `
+<div>
+  <div
+    class="m-auto flex justify-between"
+  >
+    <div
+      class="rounded-lg border bg-card text-card-foreground shadow-sm max-w-xl p-2"
+    >
+      
+      <div
+        class="flex flex-col space-y-1.5 p-6"
+      >
+        
+        <h3
+          class="text-2xl font-semibold leading-none tracking-tighter"
+        >
+          
+          Product sale stats
+          
+        </h3>
+        <p
+          class="text-sm text-muted-foreground"
+        >
+          
+          Show Top 5 Product sales
+          
+        </p>
+        
+      </div>
+      <div
+        class="p-6 pt-0"
+      >
+        
+        <div
+          class="w-full overflow-auto"
+        >
+          <table
+            class="w-full caption-bottom text-sm"
+          >
+            
+            <thead
+              class="[&_tr]:border-b"
+            >
+              
+              <tr
+                class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
+              >
+                
+                <th
+                  class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0"
+                >
+                  
+                  Product Name
+                  
+                </th>
+                <th
+                  class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0"
+                >
+                  
+                  Total Quantity Sold
+                  
+                </th>
+                <th
+                  class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0"
+                >
+                  
+                  Total Amount
+                  
+                </th>
+                
+              </tr>
+              
+            </thead>
+            <tbody
+              class="[&_tr:last-child]:border-0"
+            >
+              
+              
+              <tr
+                class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
+                data-testid="product-sales-rows"
+              >
+                
+                <td
+                  class="p-4 align-middle [&:has([role=checkbox])]:pr-0"
+                >
+                  
+                  Shipping Box
+                  
+                </td>
+                <td
+                  class="p-4 align-middle [&:has([role=checkbox])]:pr-0 text-center"
+                >
+                  
+                  
+                  
+                </td>
+                <td
+                  class="p-4 align-middle [&:has([role=checkbox])]:pr-0"
+                >
+                  
+                  $61.25
+                  
+                </td>
+                
+              </tr>
+              <tr
+                class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
+                data-testid="product-sales-rows"
+              >
+                
+                <td
+                  class="p-4 align-middle [&:has([role=checkbox])]:pr-0"
+                >
+                  
+                  Bubble Wrap
+                  
+                </td>
+                <td
+                  class="p-4 align-middle [&:has([role=checkbox])]:pr-0 text-center"
+                >
+                  
+                  
+                  
+                </td>
+                <td
+                  class="p-4 align-middle [&:has([role=checkbox])]:pr-0"
+                >
+                  
+                  $479.7
+                  
+                </td>
+                
+              </tr>
+              <tr
+                class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
+                data-testid="product-sales-rows"
+              >
+                
+                <td
+                  class="p-4 align-middle [&:has([role=checkbox])]:pr-0"
+                >
+                  
+                  Label Sticker
+                  
+                </td>
+                <td
+                  class="p-4 align-middle [&:has([role=checkbox])]:pr-0 text-center"
+                >
+                  
+                  
+                  
+                </td>
+                <td
+                  class="p-4 align-middle [&:has([role=checkbox])]:pr-0"
+                >
+                  
+                  $120.78
+                  
+                </td>
+                
+              </tr>
+              <tr
+                class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
+                data-testid="product-sales-rows"
+              >
+                
+                <td
+                  class="p-4 align-middle [&:has([role=checkbox])]:pr-0"
+                >
+                  
+                  Box Tape
+                  
+                </td>
+                <td
+                  class="p-4 align-middle [&:has([role=checkbox])]:pr-0 text-center"
+                >
+                  
+                  
+                  
+                </td>
+                <td
+                  class="p-4 align-middle [&:has([role=checkbox])]:pr-0"
+                >
+                  
+                  $155
+                  
+                </td>
+                
+              </tr>
+              <tr
+                class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
+                data-testid="product-sales-rows"
+              >
+                
+                <td
+                  class="p-4 align-middle [&:has([role=checkbox])]:pr-0"
+                >
+                  
+                  Label Sticker
+                  
+                </td>
+                <td
+                  class="p-4 align-middle [&:has([role=checkbox])]:pr-0 text-center"
+                >
+                  
+                  
+                  
+                </td>
+                <td
+                  class="p-4 align-middle [&:has([role=checkbox])]:pr-0"
+                >
+                  
+                  $825
+                  
+                </td>
+                
+              </tr>
+              
+              
+            </tbody>
+            
+          </table>
+        </div>
+        
+      </div>
+      
+    </div>
+  </div>
+</div>
+`;
