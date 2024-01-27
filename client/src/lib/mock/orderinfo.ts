@@ -5,7 +5,7 @@ export const MOCK_ORDER_INFO = [
       "company_name": "Roga & Kopyta",
       "customer_name": "Ivan Ivanovich",
       "product_name": "Corrugated Box",
-      "order_date": "2020-01-02T15:34:12Z",
+      "order_date": "2023-01-02T15:34:12Z",
       "delivered": "5",
       "total_amount": 13.454
   },
@@ -15,7 +15,7 @@ export const MOCK_ORDER_INFO = [
       "company_name": "Pupkin & Co",
       "customer_name": "Petr Petrovich",
       "product_name": "Corrugated Box",
-      "order_date": "2020-01-02T15:34:12Z",
+      "order_date": "2023-01-02T15:34:12Z",
       "delivered": "15",
       "total_amount": 23.181
   },
@@ -25,7 +25,7 @@ export const MOCK_ORDER_INFO = [
       "company_name": "Roga & Kopyta",
       "customer_name": "Ivan Ivanovich",
       "product_name": "Corrugated Box",
-      "order_date": "2020-01-05T05:34:12Z",
+      "order_date": "2023-01-05T05:34:12Z",
       "delivered": "12",
       "total_amount": 1476.414
   },
@@ -35,7 +35,7 @@ export const MOCK_ORDER_INFO = [
       "company_name": "Pupkin & Co",
       "customer_name": "Petr Petrovich",
       "product_name": "Corrugated Box",
-      "order_date": "2020-01-05T05:34:12Z",
+      "order_date": "2023-01-05T05:34:12Z",
       "delivered": "17",
       "total_amount": 6784.7595
   },
@@ -45,7 +45,7 @@ export const MOCK_ORDER_INFO = [
       "company_name": "Pupkin & Co",
       "customer_name": "Petr Petrovich",
       "product_name": "Corrugated Box",
-      "order_date": "2020-01-15T17:34:12Z",
+      "order_date": "2023-01-15T17:34:12Z",
       "delivered": "8",
       "total_amount": 402.24
   }
