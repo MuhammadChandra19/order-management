@@ -4,13 +4,22 @@ import "database/sql"
 
 //go:generate mockgen -source repository.go -destination mock/repository_mock.go -package=mock
 
+// ProductSalesStats represents the statistics of product sales.
 type ProductSalesStats struct {
 	ProductName       string  `json:"product_name"`
 	TotalQuantitySold int     `json:"total_quantity_sold"`
 	TotalAmount       float64 `json:"total_amount"`
 }
 
+// ProductRepositoryInterface defines the interface for product-related database operations.
 type ProductRepositoryInterface interface {
+	// GetProductSalesStats retrieves the 5 most sold products along with their corresponding total quantities sold and total amounts.
+	//
+	// Returns:
+	//
+	// - ([]*ProductSalesStats): A slice of product sales statistics.
+	//
+	// - (error): An error, if any.
 	GetProductSalesStats() ([]*ProductSalesStats, error)
 }
 
@@ -18,7 +27,6 @@ type repository struct {
 	db *sql.DB
 }
 
-// retrieve the 5 most sold products along with their corresponding total quantities sold and total amounts
 func (r *repository) GetProductSalesStats() ([]*ProductSalesStats, error) {
 	query := `
 		SELECT 
@@ -60,6 +68,11 @@ func (r *repository) GetProductSalesStats() ([]*ProductSalesStats, error) {
 	return productsSalesStats, nil
 }
 
+// NewProductRepository creates a new instance of ProductRepositoryInterface.
+// Parameters:
+// - db (*sql.DB): Database connection.
+// Returns:
+// - (ProductRepositoryInterface): New instance of ProductRepositoryInterface.
 func NewProductRepository(db *sql.DB) ProductRepositoryInterface {
 	return &repository{
 		db: db,

@@ -230,7 +230,7 @@ func populateOrderItems() error {
 		pricePerUnitStr := record[2]
 		var pricePerUnit float64
 		if pricePerUnitStr == "" {
-			pricePerUnit = 0.0 // You can set any default value here
+			pricePerUnit = 0.0
 		} else {
 			pricePerUnit, err = strconv.ParseFloat(pricePerUnitStr, 64)
 			if err != nil {
@@ -243,7 +243,7 @@ func populateOrderItems() error {
 		quantityStr := record[3]
 		var quantity int
 		if quantityStr == "" {
-			quantity = 0 // You can set any default value here
+			quantity = 0
 		} else {
 			quantity, err = strconv.Atoi(quantityStr)
 			if err != nil {

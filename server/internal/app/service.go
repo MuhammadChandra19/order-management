@@ -11,6 +11,21 @@ type App struct {
 	ProductService product.ProductServiceInterface
 }
 
+// InitApp initializes the application by creating instances of database connections,
+// repositories, and services for orders and products. It sets up the necessary
+// dependencies and returns an instance of the App struct containing the initialized
+// services for handling orders and products.
+//
+// Parameters:
+// - None
+//
+// Returns:
+// - *App: An instance of the App struct containing initialized order and product services.
+//
+// Notes:
+// - The function creates a new database connection using db.NewDatabase().
+// - It initializes repositories for orders and products.
+// - It creates services for handling orders and products.
 func InitApp() *App {
 	pg := db.NewDatabase()
 	// _ = customer.NewCustomerRepository(pg)

@@ -37,7 +37,26 @@ type OrderInfo struct {
 	TotalAmount  float64   `json:"total_amount"`
 }
 
+// OrderRepositoryInterface defines the interface for accessing order-related data.
+
 type OrderRepositoryInterface interface {
+	// GetOrderList retrieves a list of orders based on search criteria, date range, sorting, limit, and offset.
+	//
+	// Parameters:
+	// - search (string): Search string for filtering orders by name or product.
+	//
+	// - startDate (time.Time): Start date for date range filtering.
+	//
+	// - endDate (time.Time): End date for date range filtering.
+	//
+	// - sortDirection (string): Sorting direction (ASC or DESC).
+	//
+	// - limit (int): Maximum number of orders to retrieve.
+	//
+	// - offset (int): Pagination offset.
+	//
+	// Returns:
+	// - ([]*OrderInfo, error): Retrieved orders and any retrieval errors.
 	GetOrderList(search string, startDate, endDate time.Time, sortDirection string, limit, offset int) ([]*OrderInfo, error)
 }
 
@@ -126,6 +145,21 @@ func (r *repository) GetOrderList(search string, startDate, endDate time.Time, s
 	return ordersInfo, nil
 }
 
+// NewOrderRepository creates a new instance of the OrderRepositoryInterface,
+// which is an interface for interacting with the database to perform operations
+// related to orders.
+//
+// Parameters:
+// - db (*sql.DB): A pointer to the database instance to be used by the repository.
+//
+// Returns:
+// - OrderRepositoryInterface: An instance of the OrderRepositoryInterface.
+//
+// Notes:
+//   - The function creates a new repository struct with the provided database connection.
+//   - The returned repository implements the OrderRepositoryInterface.
+//   - The OrderRepositoryInterface defines methods for interacting with order-related data
+//     in the database.
 func NewOrderRepository(db *sql.DB) OrderRepositoryInterface {
 	return &repository{
 		db: db,

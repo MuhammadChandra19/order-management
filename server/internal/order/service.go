@@ -11,7 +11,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// OrderServiceInterface defines the interface for order-related operations.
 type OrderServiceInterface interface {
+	// GetOrderList retrieves a list of orders based on the provided context.
+	// Parameters:
+	// - c (*gin.Context): Context for handling the request.
 	GetOrderList(c *gin.Context)
 }
 
@@ -48,6 +52,11 @@ func (s *service) GetOrderList(c *gin.Context) {
 
 }
 
+// NewOrderService creates a new OrderService instance with the provided OrderRepositoryInterface.
+// Parameters:
+// - orderRepo (OrderRepositoryInterface): Order repository interface implementation.
+// Returns:
+// - (OrderServiceInterface): New instance of OrderServiceInterface.
 func NewOrderService(orderRepo OrderRepositoryInterface) OrderServiceInterface {
 	return &service{
 		orderRepo: orderRepo,
