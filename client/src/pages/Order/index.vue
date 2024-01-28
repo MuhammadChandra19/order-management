@@ -83,6 +83,9 @@ onMounted(() => {
   loadOrderList()
 })
 
+/**
+ * Loads the order list based on the current query parameters.
+ */
 const loadOrderList = async () => {
   try {
     isLoading.value = true
@@ -104,6 +107,10 @@ watch(
   }
 )
 
+/**
+ * Toggles the sort direction of the order list.
+ */
+
 const toggleSort = () => {
   const isDescending = queryParams.value?.sort_direction === 'DESC' || false
   router.push({
@@ -113,6 +120,11 @@ const toggleSort = () => {
     }
   })
 }
+
+/**
+ * Handles the change in limit (number of items per page) for pagination.
+ * @param {number} value - The new limit value.
+ */
 
 const handleLimitChange = (value: number) => {
   router.push({
@@ -124,6 +136,10 @@ const handleLimitChange = (value: number) => {
   })
 }
 
+/**
+ * Handles the change in page number for pagination.
+ * @param {number} direction - The direction of page change (-1 for previous, 1 for next).
+ */
 const handlePageChange = (direction: number) => {
   const currentPage =  Math.ceil((queryParams.value.offset || 0) / (queryParams.value.limit || 5)) + direction
   const offset = currentPage > 0 ? currentPage * (queryParams.value.limit || 5) : 0
