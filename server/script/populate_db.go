@@ -13,7 +13,7 @@ import (
 	"github.com/MuhammadChandra19/order-management/internal/utils"
 )
 
-var database sql.DB
+var database *sql.DB
 
 func main() {
 	database = db.NewDatabase()
