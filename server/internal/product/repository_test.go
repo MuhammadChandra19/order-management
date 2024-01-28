@@ -36,7 +36,7 @@ func TestProduct_GetProductSalesStats(t *testing.T) {
 	testCases := []struct {
 		name       string
 		mockFunc   func(sqlmock.Sqlmock)
-		assertFunc func(*testing.T, []product.ProductSalesStats, error)
+		assertFunc func(*testing.T, []*product.ProductSalesStats, error)
 	}{
 		{
 			name: "query error",
@@ -44,7 +44,7 @@ func TestProduct_GetProductSalesStats(t *testing.T) {
 				s.ExpectQuery(regexp.QuoteMeta(query)).
 					WillReturnError(sql.ErrConnDone)
 			},
-			assertFunc: func(t *testing.T, pss []product.ProductSalesStats, err error) {
+			assertFunc: func(t *testing.T, pss []*product.ProductSalesStats, err error) {
 				assert.Equal(t, sql.ErrConnDone.Error(), err.Error())
 			},
 		},
@@ -56,7 +56,7 @@ func TestProduct_GetProductSalesStats(t *testing.T) {
 				s.ExpectQuery(regexp.QuoteMeta(query)).
 					WillReturnRows(rows)
 			},
-			assertFunc: func(t *testing.T, pss []product.ProductSalesStats, err error) {
+			assertFunc: func(t *testing.T, pss []*product.ProductSalesStats, err error) {
 				assert.Contains(t, err.Error(), "Scan error")
 			},
 		},
@@ -68,8 +68,8 @@ func TestProduct_GetProductSalesStats(t *testing.T) {
 				s.ExpectQuery(regexp.QuoteMeta(query)).
 					WillReturnRows(rows)
 			},
-			assertFunc: func(t *testing.T, pss []product.ProductSalesStats, err error) {
-				assert.Equal(t, product.ProductSalesStats{
+			assertFunc: func(t *testing.T, pss []*product.ProductSalesStats, err error) {
+				assert.Equal(t, &product.ProductSalesStats{
 					ProductName:       "Hand sanitizer",
 					TotalQuantitySold: 135,
 					TotalAmount:       12295.8598,

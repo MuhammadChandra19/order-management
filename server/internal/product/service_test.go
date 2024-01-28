@@ -33,7 +33,7 @@ func TestGetProductSalesStats(t *testing.T) {
 		{
 			name: "success request",
 			mockFn: func(mpri *mock.MockProductRepositoryInterface) {
-				mpri.EXPECT().GetProductSalesStats().Return([]product.ProductSalesStats{
+				mpri.EXPECT().GetProductSalesStats().Return([]*product.ProductSalesStats{
 					{
 						ProductName:       "Hand sanitizer",
 						TotalQuantitySold: 135,

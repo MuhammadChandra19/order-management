@@ -14,11 +14,11 @@ type App struct {
 func InitApp() *App {
 	pg := db.NewDatabase()
 	// _ = customer.NewCustomerRepository(pg)
-	orderRepo := order.NewOrderRepository(&pg)
+	orderRepo := order.NewOrderRepository(pg)
 	// deliveryRepo := delivery.NewDeliveryRepository(pg)
 	orderService := order.NewOrderService(orderRepo)
 
-	productRepo := product.NewProductRepository(&pg)
+	productRepo := product.NewProductRepository(pg)
 	productService := product.NewProductService(productRepo)
 
 	return &App{

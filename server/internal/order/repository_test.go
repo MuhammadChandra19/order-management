@@ -50,7 +50,7 @@ func TestOrder_GetOrderList(t *testing.T) {
 		offset        int
 
 		mockFunc   func(sqlmock.Sqlmock, string, time.Time, time.Time, int, int)
-		assertFunc func(*testing.T, []order.OrderInfo, error)
+		assertFunc func(*testing.T, []*order.OrderInfo, error)
 	}{
 		"query error": {
 			search:        "",
@@ -75,7 +75,7 @@ func TestOrder_GetOrderList(t *testing.T) {
 					WithArgs(startDate, endDate, limit, offset).
 					WillReturnError(sql.ErrConnDone)
 			},
-			assertFunc: func(t *testing.T, oi []order.OrderInfo, err error) {
+			assertFunc: func(t *testing.T, oi []*order.OrderInfo, err error) {
 				assert.Equal(t, sql.ErrConnDone.Error(), err.Error())
 			},
 		},
@@ -104,7 +104,7 @@ func TestOrder_GetOrderList(t *testing.T) {
 					WithArgs(startDate, endDate, limit, offset).
 					WillReturnRows(rows)
 			},
-			assertFunc: func(t *testing.T, oi []order.OrderInfo, err error) {
+			assertFunc: func(t *testing.T, oi []*order.OrderInfo, err error) {
 				assert.Contains(t, err.Error(), "Scan error")
 			},
 		},
@@ -133,8 +133,8 @@ func TestOrder_GetOrderList(t *testing.T) {
 					WithArgs(startDate, endDate, limit, offset).
 					WillReturnRows(rows)
 			},
-			assertFunc: func(t *testing.T, oi []order.OrderInfo, err error) {
-				assert.Equal(t, order.OrderInfo{
+			assertFunc: func(t *testing.T, oi []*order.OrderInfo, err error) {
+				assert.Equal(t, &order.OrderInfo{
 					Id:           "1",
 					OrderName:    "OrderName",
 					CompanyName:  "CompanyName",
@@ -173,8 +173,8 @@ func TestOrder_GetOrderList(t *testing.T) {
 					WithArgs("%"+search+"%", startDate, endDate, limit, offset).
 					WillReturnRows(rows)
 			},
-			assertFunc: func(t *testing.T, oi []order.OrderInfo, err error) {
-				assert.Equal(t, order.OrderInfo{
+			assertFunc: func(t *testing.T, oi []*order.OrderInfo, err error) {
+				assert.Equal(t, &order.OrderInfo{
 					Id:           "1",
 					OrderName:    "OrderName",
 					CompanyName:  "CompanyName",

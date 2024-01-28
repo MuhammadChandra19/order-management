@@ -23,7 +23,7 @@ func setup() {
 	}
 }
 
-func NewDatabase() sql.DB {
+func NewDatabase() *sql.DB {
 	setup()
-	return *db
+	return db
 }

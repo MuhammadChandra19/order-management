@@ -38,14 +38,14 @@ type OrderInfo struct {
 }
 
 type OrderRepositoryInterface interface {
-	GetOrderList(search string, startDate, endDate time.Time, sortDirection string, limit, offset int) ([]OrderInfo, error)
+	GetOrderList(search string, startDate, endDate time.Time, sortDirection string, limit, offset int) ([]*OrderInfo, error)
 }
 
 type repository struct {
 	db *sql.DB
 }
 
-func (r *repository) GetOrderList(search string, startDate, endDate time.Time, sortDirection string, limit, offset int) ([]OrderInfo, error) {
+func (r *repository) GetOrderList(search string, startDate, endDate time.Time, sortDirection string, limit, offset int) ([]*OrderInfo, error) {
 	args := []interface{}{}
 
 	query := `
@@ -103,7 +103,7 @@ func (r *repository) GetOrderList(search string, startDate, endDate time.Time, s
 	}
 	defer rows.Close()
 
-	var ordersInfo []OrderInfo
+	var ordersInfo []*OrderInfo
 
 	for rows.Next() {
 		var orderInfo OrderInfo
@@ -120,7 +120,7 @@ func (r *repository) GetOrderList(search string, startDate, endDate time.Time, s
 		if err != nil {
 			return nil, err
 		}
-		ordersInfo = append(ordersInfo, orderInfo)
+		ordersInfo = append(ordersInfo, &orderInfo)
 	}
 
 	return ordersInfo, nil

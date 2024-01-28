@@ -11,7 +11,7 @@ type ProductSalesStats struct {
 }
 
 type ProductRepositoryInterface interface {
-	GetProductSalesStats() ([]ProductSalesStats, error)
+	GetProductSalesStats() ([]*ProductSalesStats, error)
 }
 
 type repository struct {
@@ -19,7 +19,7 @@ type repository struct {
 }
 
 // retrieve the 5 most sold products along with their corresponding total quantities sold and total amounts
-func (r *repository) GetProductSalesStats() ([]ProductSalesStats, error) {
+func (r *repository) GetProductSalesStats() ([]*ProductSalesStats, error) {
 	query := `
 		SELECT 
 			oi.product AS product_name,
@@ -43,7 +43,7 @@ func (r *repository) GetProductSalesStats() ([]ProductSalesStats, error) {
 	}
 	defer rows.Close()
 
-	var productsSalesStats []ProductSalesStats
+	var productsSalesStats []*ProductSalesStats
 	for rows.Next() {
 		var productSalesStats ProductSalesStats
 		err := rows.Scan(
@@ -54,7 +54,7 @@ func (r *repository) GetProductSalesStats() ([]ProductSalesStats, error) {
 		if err != nil {
 			return nil, err
 		}
-		productsSalesStats = append(productsSalesStats, productSalesStats)
+		productsSalesStats = append(productsSalesStats, &productSalesStats)
 	}
 
 	return productsSalesStats, nil

@@ -36,10 +36,10 @@ func (m *MockOrderRepositoryInterface) EXPECT() *MockOrderRepositoryInterfaceMoc
 }
 
 // GetOrderList mocks base method.
-func (m *MockOrderRepositoryInterface) GetOrderList(search string, startDate, endDate time.Time, sortDirection string, limit, offset int) ([]order.OrderInfo, error) {
+func (m *MockOrderRepositoryInterface) GetOrderList(search string, startDate, endDate time.Time, sortDirection string, limit, offset int) ([]*order.OrderInfo, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetOrderList", search, startDate, endDate, sortDirection, limit, offset)
-	ret0, _ := ret[0].([]order.OrderInfo)
+	ret0, _ := ret[0].([]*order.OrderInfo)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

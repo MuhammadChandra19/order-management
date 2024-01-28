@@ -35,10 +35,10 @@ func (m *MockProductRepositoryInterface) EXPECT() *MockProductRepositoryInterfac
 }
 
 // GetProductSalesStats mocks base method.
-func (m *MockProductRepositoryInterface) GetProductSalesStats() ([]product.ProductSalesStats, error) {
+func (m *MockProductRepositoryInterface) GetProductSalesStats() ([]*product.ProductSalesStats, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetProductSalesStats")
-	ret0, _ := ret[0].([]product.ProductSalesStats)
+	ret0, _ := ret[0].([]*product.ProductSalesStats)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

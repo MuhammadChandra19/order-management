@@ -48,7 +48,7 @@ func TestGetOrderList(t *testing.T) {
 			name:        "Successful request",
 			queryParams: "?search=test&start_date=2022-01-01T00:00:00Z&end_date=2022-12-31T23:59:59Z&sort_direction=DESC&limit=5&offset=0",
 			mockFn: func(mori *mock.MockOrderRepositoryInterface) {
-				mori.EXPECT().GetOrderList("test", startDate, endDate, "DESC", 5, 0).Return([]order.OrderInfo{
+				mori.EXPECT().GetOrderList("test", startDate, endDate, "DESC", 5, 0).Return([]*order.OrderInfo{
 					{
 						Id:           "1",
 						OrderName:    "OrderName",
